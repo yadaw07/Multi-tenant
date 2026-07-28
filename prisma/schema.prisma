@@ -7,17 +7,62 @@ datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String?
-  posts Post[]
-} 
-model Post { 
-  id        Int     @id @default(autoincrement()) 
-  title     String
-  content   String?
-  published Boolean @default(false) 
-  authorId  Int
-  author    User    @relation(fields: [authorId], references: [id]) 
-} 
+model User {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  name        String?
+  email       String   @unique
+  createdAt   DateTime @default(now())
+
+  memberships OrganizationMember[]
+  documents   Document[]
+
+  @@map("users")
+}
+
+model Organization {
+  id         String   @id @default(cuid())
+  clerkOrgId String   @unique
+  name       String?
+  slug       String   @unique
+  createdAt  DateTime @default(now())
+
+  members   OrganizationMember[]
+  documents Document[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String
+  role           String   @default("member")
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@unique([userId, organizationId])
+  @@map("organization_member")
+}
+
+model Document {
+  id             String   @id @default(cuid())
+  name           String?
+  content        String?
+  fileUrl        String?
+  fileSize       Int?
+  fileType       String?
+  aiSummary      String?
+  aiKeywords     String[]
+  sentiment      String?
+  organizationId String
+  userId         String
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@map("documents")
+}
