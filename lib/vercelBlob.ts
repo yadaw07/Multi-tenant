@@ -1,0 +1,31 @@
+import { put, del } from '@vercel/blob';
+
+export async function UploadToBlob(
+  file: File,
+  organizationId: string,
+  userId: string,
+): Promise<{ url: string; pathname: string }> {
+  try {
+    const filename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`; // replace space with "-"
+    const pathname = `org-${organizationId}/user-${userId}/${filename}`;
+
+    const blob = await put(pathname, file, {
+      access: 'public',
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+
+    return { url: blob.url, pathname: blob.pathname };
+  } catch (error) {
+    console.error('Blob upload error: ', error);
+    throw Error('Failed to upload blob');
+  }
+}
+
+export async function DeleteFromBlob(url: string): Promise<void> {
+  try {
+    await del(url, { token: process.env.BLOB_READ_WRITE_TOKEN });
+  } catch (error) {
+    console.error('Blob deletion error: ', error);
+    throw Error('Failed to delete blob');
+  }
+}
