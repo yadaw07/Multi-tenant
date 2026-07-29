@@ -6,6 +6,9 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { cn } from '@/lib/utils';
 
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const inter = Inter({
@@ -13,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'DocuAI-Multi-tenant SaaS App',
+  title: 'DocuAI',
   description:
     'AI-Powered Document Analysis Platform. Multi-tenant SaaS for Teams & Organizations',
 };
@@ -29,11 +32,13 @@ export default function RootLayout({
         <body className={inter.className}>
           <div className='min-h-screen flex flex-col'>
             {/* Header */}
+            <Header />
 
             {/* Main */}
             <main className='flex-1'>{children}</main>
 
             {/* Footer */}
+            <Footer />
           </div>
         </body>
       </html>
