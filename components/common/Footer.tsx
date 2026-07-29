@@ -35,7 +35,7 @@ const Footer = () => {
     },
     {
       icon: <XIcon className='h-5 w-5' />,
-      href: 'https://github.com',
+      href: 'https://twitter.com',
       label: 'Twitter',
     },
     {
