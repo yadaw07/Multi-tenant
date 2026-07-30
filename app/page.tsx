@@ -2,7 +2,7 @@ import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
 import { features, steps } from './data/data';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
@@ -53,7 +53,7 @@ export default function Home() {
                 <CardHeader>
                   <div className='inline-flex items-center justify-center p-3 bg-blue-100 rounded-lg mb-4'>
                     <div className='text-blue-600'>
-                      {<feature.icon className='w-8 h-8' />}
+                      <feature.icon className='w-8 h-8' />
                     </div>
                   </div>
                   <CardTitle>{feature.title}</CardTitle>
@@ -88,21 +88,22 @@ export default function Home() {
       {/* Call to Action */}
       <section className='py-20 bg-linear-to-r from-blue-50 to-indigo-50'>
         <div className='container mx-auto max-w-4xl px-4 text-center'>
-          <h2 className='text-3xl fount-bold mb-4'>
+          <h2 className='text-3xl font-bold mb-4'>
             Ready to analyze your documents ?
           </h2>
           <p className='text-gray-600 mb-8 max-w-2xl mx-auto'>
             Join thousands of teams using DocuAI to work smarter with their
             documents.
           </p>
-          <Link href='/sign-up'>
-            <Button size='lg' className='px-8'>
-              Get Started Free
-            </Button>
-            <p className='text-sm text-gray-500 mt-4'>
-              No credit card required • 14-day free trial
-            </p>
+          <Link
+            href='/sign-up'
+            className={buttonVariants({ size: 'lg', className: 'px-8' })}
+          >
+            Start Free Trial
           </Link>
+          <p className='text-sm text-gray-500 mt-4'>
+            No credit card required • 14-day free trial
+          </p>
         </div>
       </section>
     </>
