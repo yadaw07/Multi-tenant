@@ -10,31 +10,58 @@ export async function syncUserToDatabase() {
     const name = `${clerkUser.fullName || ''}`.trim();
     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
 
-    // Ckeck if user exist in db
+    // First check by Clerk ID
     let dbUser = await prisma.user.findUnique({
-      where: { clerkUserId: clerkUser.id },
+      where: {
+        clerkUserId: clerkUser.id,
+      },
     });
 
     if (dbUser) {
-      // Update the existing user
+      // User exists
       dbUser = await prisma.user.update({
-        where: { id: dbUser.id },
-        data: { email, name: name || dbUser.name },
-      });
-    } else {
-      // Create new user
-      dbUser = await prisma.user.create({
+        where: {
+          id: dbUser.id,
+        },
         data: {
-          clerkUserId: clerkUser.id,
           email,
-          name,
+          name: name || dbUser.name,
         },
       });
+    } else {
+      // Check whether this email already exists
+      dbUser = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (dbUser) {
+        // Existing database user → connect it to this Clerk account
+        dbUser = await prisma.user.update({
+          where: {
+            id: dbUser.id,
+          },
+          data: {
+            clerkUserId: clerkUser.id,
+            name: name || dbUser.name,
+          },
+        });
+      } else {
+        // Completely new user
+        dbUser = await prisma.user.create({
+          data: {
+            clerkUserId: clerkUser.id,
+            email,
+            name,
+          },
+        });
+      }
     }
 
     return dbUser;
   } catch (error) {
-    console.error('Error syncing from clerk', error);
+    console.error('Error syncing from Clerk', error);
     throw error;
   }
 }

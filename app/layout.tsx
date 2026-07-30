@@ -32,9 +32,9 @@ export default async function RootLayout({
   await syncUserToDatabase();
 
   return (
-    <ClerkProvider>
-      <html lang='en' className={cn('font-sans', geist.variable)}>
-        <body className={inter.className}>
+    <html lang='en' className={cn('font-sans', geist.variable)}>
+      <body className={inter.className}>
+        <ClerkProvider>
           <div className='min-h-screen flex flex-col'>
             {/* Header */}
             <Header />
@@ -45,8 +45,8 @@ export default async function RootLayout({
             {/* Footer */}
             <Footer />
           </div>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
