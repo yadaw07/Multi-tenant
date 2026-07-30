@@ -3,11 +3,13 @@ import { Inter, Geist } from 'next/font/google';
 
 import { ClerkProvider } from '@clerk/nextjs';
 
-import './globals.css';
 import { cn } from '@/lib/utils';
+import { syncUserToDatabase } from '@/lib/sync-user';
 
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+
+import './globals.css';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -21,11 +23,14 @@ export const metadata: Metadata = {
     'AI-Powered Document Analysis Platform. Multi-tenant SaaS for Teams & Organizations',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Sync user info to database from clerk
+  await syncUserToDatabase();
+
   return (
     <ClerkProvider>
       <html lang='en' className={cn('font-sans', geist.variable)}>
