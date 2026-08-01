@@ -66,8 +66,6 @@ const CreateOrganization = () => {
         return;
       }
 
-      toast.success(`Organization ${newOrg.name} created successfully`);
-
       setOrgName('');
 
       // Save organization to db
@@ -91,6 +89,8 @@ const CreateOrganization = () => {
             'Database sync failed, but organization created in clerk',
           );
         }
+
+        toast.success(`Organization ${newOrg.name} created successfully`);
       } catch (dbErr) {
         console.warn('Database sync failed', dbErr);
       }
@@ -147,6 +147,7 @@ const CreateOrganization = () => {
               {isCreating ? (
                 <>
                   <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                  Creating...
                 </>
               ) : (
                 'Create'
