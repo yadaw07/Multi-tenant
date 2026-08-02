@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 
 import prisma from '@/lib/prisma';
-import { DeleteFromBlob } from '@/lib/vercelBlob';
+import { deleteFromBlob } from '@/lib/vercelBlob';
 
 interface RouteParams {
   params: Promise<{ documentId: string }>;
@@ -57,7 +57,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     // Delete User from Vercel Blob if exist
     if (document.fileUrl) {
       try {
-        await DeleteFromBlob(document.fileUrl);
+        await deleteFromBlob(document.fileUrl);
       } catch (error) {
         console.log('Failed to Delete Document', error);
       }

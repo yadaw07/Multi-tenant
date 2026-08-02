@@ -1,6 +1,6 @@
 import { put, del } from '@vercel/blob';
 
-export async function UploadToBlob(
+export async function uploadToBlob(
   file: File,
   organizationId: string,
   userId: string,
@@ -10,18 +10,18 @@ export async function UploadToBlob(
     const pathname = `org-${organizationId}/user-${userId}/${filename}`;
 
     const blob = await put(pathname, file, {
-      access: 'public',
+      access: 'private',
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     return { url: blob.url, pathname: blob.pathname };
   } catch (error) {
     console.error('Blob upload error: ', error);
-    throw Error('Failed to upload blob');
+    throw new Error('Failed to upload blob');
   }
 }
 
-export async function DeleteFromBlob(url: string): Promise<void> {
+export async function deleteFromBlob(url: string): Promise<void> {
   try {
     await del(url, { token: process.env.BLOB_READ_WRITE_TOKEN });
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 
-import { UploadToBlob } from '@/lib/vercelBlob';
+import { uploadToBlob } from '@/lib/vercelBlob';
 import prisma from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     // Upload to Vercel Blob
     if (file && file.size > 0) {
-      const blob = await UploadToBlob(file, clerkOrgId, userId);
+      const blob = await uploadToBlob(file, clerkOrgId, userId);
 
       fileUrl = blob.url;
       fileSize = file.size;
