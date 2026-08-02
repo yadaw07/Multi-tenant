@@ -22,7 +22,7 @@ import {
 
 interface UploadDocDialogProps {
   onUploadSuccess?: () => void;
-  trigger?: React.ReactNode;
+  trigger?: React.ReactElement; // change from React.ReactNode
 }
 
 const UploadDocumentDialog = ({
@@ -121,14 +121,16 @@ const UploadDocumentDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-      <DialogTrigger>
-        {trigger || (
-          <Button>
-            <Upload className='h-4 w-4 mr-2' />
-            Upload Document
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger || (
+            <Button>
+              <Upload className='h-4 w-4 mr-2' />
+              Upload Document
+            </Button>
+          )
+        }
+      />
       <DialogContent>
         <DialogHeader className='sm:max-w-125'>
           <DialogTitle>Upload Document</DialogTitle>
