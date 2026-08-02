@@ -3,13 +3,24 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Brain, Home, LogIn, UserPlus, Users } from 'lucide-react';
+import {
+  Brain,
+  Building,
+  FileText,
+  Home,
+  LogIn,
+  UserPlus,
+  Users,
+} from 'lucide-react';
 import { Button } from '../ui/button';
 
-import { Show, UserButton } from '@clerk/nextjs';
+import { Show, useOrganization, UserButton, useUser } from '@clerk/nextjs';
 
 function Header() {
   const pathname = usePathname();
+
+  const { user } = useUser();
+  const { organization } = useOrganization();
 
   const navItems = () => {
     const baseItems = [
@@ -20,6 +31,22 @@ function Header() {
         icon: <Users className='w-4 h-4' />,
       },
     ];
+
+    if (organization) {
+      return [
+        ...baseItems,
+        {
+          href: `/${organization.slug}`,
+          label: 'Organization Dashboard',
+          icon: <Building className='w-4 h-4' />,
+        },
+        {
+          href: `/${organization.slug}/documents`,
+          label: 'Organization Documents',
+          icon: <FileText className='w-4 h-4' />,
+        },
+      ];
+    }
 
     return [...baseItems];
   };
@@ -33,6 +60,8 @@ function Header() {
           <Brain className='w-6 h-6 text-blue-600' />
           DocuAI
         </Link>
+
+        {/* Implement mobile nav bar */}
 
         {/* Navigation */}
         <nav className='hidden md:flex items-center gap-1'>
@@ -78,6 +107,11 @@ function Header() {
 
           <Show when='signed-in'>
             <div className='md:flex items-center gap-2'>
+              <span className='text-sm text-gray-600'>
+                {organization
+                  ? `In ${organization.name}`
+                  : user?.firstName || user?.username}
+              </span>
               <UserButton />
             </div>
           </Show>

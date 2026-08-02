@@ -10,6 +10,7 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 
 import './globals.css';
+import { Toaster } from 'sonner';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -41,6 +42,7 @@ export default async function RootLayout({
 
             {/* Main */}
             <main className='flex-1'>{children}</main>
+            <Toaster position='top-right' richColors closeButton />
 
             {/* Footer */}
             <Footer />
