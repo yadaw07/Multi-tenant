@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { FileText, Loader2 } from 'lucide-react';
 
 import { formatFileSize } from '@/app/data/data';
-import { Document } from '@/types';
+import { AnalysisType, Document } from '@/types';
 
 import UploadDocumentDialog from '@/components/document/UploadDocDialog';
 import DocumentCard from '@/components/document/DocumentCard';
@@ -25,6 +25,19 @@ const documentsPage = () => {
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isAnalyzing, setIsAnalyzing] = useState<string | null>(null);
+  const [selectedAnalysisType, setSelectedAnalysisType] =
+    useState<AnalysisType>('summary');
+  const [expandedSummaries, setExpandedSummaries] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const handleAnalyze = async (documentId: string) => {};
+
+  const handleDelete = async (documentId: string) => {};
+
+  const handleToggleSummary = (documentId: string) => {};
 
   const fetchDocuments = async () => {
     if (!organization) return;
@@ -138,7 +151,18 @@ const documentsPage = () => {
               ) : (
                 <div className='space-y-6'>
                   {documents.map((doc) => (
-                    <DocumentCard key={doc.id} document={doc} />
+                    <DocumentCard
+                      key={doc.id}
+                      document={doc}
+                      isAnalyzing={isAnalyzing === doc.id}
+                      selectedAnalysisType={selectedAnalysisType}
+                      onAnalysisTypeChange={setSelectedAnalysisType}
+                      onAnalyze={handleAnalyze}
+                      onDelete={handleDelete}
+                      onToggleSummary={handleToggleSummary}
+                      expandedSummaries={expandedSummaries}
+                      formatFileSize={formatFileSize}
+                    />
                   ))}
                 </div>
               )}
