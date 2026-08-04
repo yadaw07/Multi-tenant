@@ -60,20 +60,39 @@ export async function POST(req: NextRequest) {
     // Analyze using Gemini AI
     const summary = await analyzeWithGemini(content, analysisType);
 
+    // Build update data conditionally — only touch fields relevant to this analysis type
+    const updateData: {
+      aiSummary: string;
+      sentiment?: string;
+      aiKeywords?: string[];
+    } = {
+      aiSummary: summary,
+    };
+
+    if (analysisType === 'sentiment') {
+      // Extract just the sentiment word
+      const firstLine = summary.split('\n')[0].trim();
+      updateData.sentiment = firstLine;
+    }
+
+    if (analysisType === 'entities') {
+      // Split comma-separated keywords into an array
+      updateData.aiKeywords = summary
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean);
+    }
+
     // Save Results to DB
     const updateDocument = await prisma.document.update({
       where: {
         id: documentId,
       },
-      data: {
-        aiSummary: summary,
-        aiKeywords: ['analyzed'],
-        sentiment: analysisType,
-      },
+      data: updateData,
     });
 
     // Return the Response
-    NextResponse.json({
+    return NextResponse.json({
       success: true,
       summary,
       document: {

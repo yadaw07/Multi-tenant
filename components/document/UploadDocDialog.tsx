@@ -71,10 +71,7 @@ const UploadDocumentDialog = ({
 
     formData.append('name', docName);
     formData.append('organizationId', organization.id);
-
-    if (selectedFile) {
-      formData.append('file', selectedFile);
-    }
+    formData.append('file', selectedFile);
 
     try {
       const response = await fetch(`/api/documents`, {
@@ -159,7 +156,7 @@ const UploadDocumentDialog = ({
                 ref={fileInputRef}
                 onChange={handleFileSelect}
                 className='hidden'
-                accept='.txt, .pdf, .docx, .doc, .md'
+                accept='.txt,.pdf,.docx,.doc,.md'
                 id='file-upload'
                 disabled={isUploading}
               />

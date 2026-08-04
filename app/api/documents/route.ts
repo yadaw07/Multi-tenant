@@ -136,7 +136,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // api/documents?organizationId=${organization.id}
+    // /api/documents?organizationId=${organization.id}
     const { searchParams } = new URL(req.url);
     const clerkOrgId = searchParams.get('organizationId');
 
@@ -175,6 +175,13 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+
+    if (!user || user.memberships.length === 0) {
+      return NextResponse.json(
+        { error: 'You have no permission to access this organization.' },
+        { status: 403 },
+      );
+    }
 
     // Get All Documents for organization
     const documents = await prisma.document.findMany({

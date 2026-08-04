@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 import { redirect } from 'next/navigation';
 
@@ -45,14 +45,14 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
         <CardContent>
           <div className='flex items-center justify-between'>
             <div className='space-y-1'>
-              <h1 className='text-2xl font-semibold tracking-light'>
+              <h1 className='text-2xl font-semibold tracking-tight'>
                 {organization.name}
               </h1>
               <p className='text-sm text-muted-foreground'>
                 Organization workspace
               </p>
             </div>
-            <Badge className='px-4 py-1.5 font-medium'>{membership.role}</Badge>
+            <Badge className='px-4 py-2 font-medium'>{membership.role}</Badge>
           </div>
         </CardContent>
       </Card>

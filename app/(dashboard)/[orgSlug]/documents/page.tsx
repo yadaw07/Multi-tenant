@@ -7,7 +7,7 @@ import { useOrganization } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { FileText, Loader2 } from 'lucide-react';
 
-import { formatFileSize } from '@/app/data/data';
+import { analysisTypes, formatFileSize } from '@/app/data/data';
 import { AnalysisType, Document } from '@/types';
 
 import UploadDocumentDialog from '@/components/document/UploadDocDialog';
@@ -33,19 +33,14 @@ const documentsPage = () => {
     new Set(),
   );
 
-  const handleAnalyze = async (documentId: string) => {};
-
-  const handleDelete = async (documentId: string) => {};
-
-  const handleToggleSummary = (documentId: string) => {};
-
+  // Fetch documents
   const fetchDocuments = async () => {
     if (!organization) return;
 
     setIsLoading(true);
     try {
       const response = await fetch(
-        `api/documents?organizationId/${organization.id}`,
+        `/api/documents?organizationId=${organization.id}`,
       );
 
       if (!response.ok) {
@@ -61,6 +56,82 @@ const documentsPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAnalyze = async (documentId: string) => {
+    if (!organization) return;
+
+    setIsAnalyzing(organization.id);
+
+    try {
+      const response = await fetch(`/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          organizationId: organization.id,
+          documentId,
+          analysisType: selectedAnalysisType,
+        }),
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        toast.error(error || 'Failed to analyze document. Please try again.');
+      } else {
+        const analysisTypeLabel = analysisTypes.find(
+          (type) => type.value === selectedAnalysisType,
+        )?.label;
+
+        toast.success(
+          `${analysisTypeLabel || 'Document'} analysis completed successfully.`,
+        );
+
+        fetchDocuments();
+        setExpandedSummaries((prev) => new Set(prev).add(documentId));
+      }
+    } catch (error) {
+      console.error('Failed to analyze document', error);
+      toast.error('Failed to analyze document. Please try again.');
+    } finally {
+      setIsAnalyzing(null);
+    }
+  };
+
+  const handleDelete = async (documentId: string) => {
+    if (!confirm('Are you sure you want to delete this document')) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/documents/${documentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        toast.error(error || 'Failed to delete document');
+      } else {
+        const { message } = await response.json();
+        toast.success(message || 'Document deleted successfully');
+        fetchDocuments();
+      }
+    } catch (error) {
+      console.error('Failed to delete document', error);
+      toast.error('Failed to delete document');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleSummary = (documentId: string) => {
+    const newExpanded = new Set(expandedSummaries);
+
+    if (newExpanded.has(documentId)) {
+      newExpanded.delete(documentId);
+    } else {
+      newExpanded.add(documentId);
+    }
+
+    setExpandedSummaries(newExpanded);
   };
 
   useEffect(() => {
@@ -79,7 +150,7 @@ const documentsPage = () => {
         </div>
 
         {/* Upload Dialog */}
-        <UploadDocumentDialog />
+        <UploadDocumentDialog onUploadSuccess={fetchDocuments} />
       </div>
 
       {/* Stats Bar */}

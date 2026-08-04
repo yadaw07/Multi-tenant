@@ -121,7 +121,7 @@ const orgDashboardPage = async ({
                       </div>
                     </div>
                     {doc.aiSummary ? (
-                      <Brain className='w-5 h-5 text-gray-500' />
+                      <Brain className='w-5 h-5 text-green-500' />
                     ) : (
                       <Button variant='outline'>Analyze</Button>
                     )}
