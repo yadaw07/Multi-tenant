@@ -1,7 +1,12 @@
+'use client';
+
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
+import { useUser } from '@clerk/nextjs';
+
 import { features, steps } from './data/data';
+
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
@@ -11,6 +16,8 @@ import {
 } from '@/components/ui/card';
 
 export default function Home() {
+  const { user } = useUser();
+
   return (
     <>
       {/* Hero */}
@@ -32,11 +39,13 @@ export default function Home() {
                 Start Free Trial
               </Button>
             </Link>
-            <Link href='/sign-in'>
-              <Button size='lg' variant='outline' className='px-8'>
-                Sign In
-              </Button>
-            </Link>
+            {!user && (
+              <Link href='/sign-in'>
+                <Button size='lg' variant='outline' className='px-8'>
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
