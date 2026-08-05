@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import { ArrowRight } from 'lucide-react';
 
 interface OrganizationStatsProps {
@@ -52,10 +52,19 @@ const OrganizationStats = ({
         </CardHeader>
         <CardContent>
           <div className='text-3xl font-bold'>{memberCount}</div>
-          <Button variant='ghost' size='sm' className='mt-2'>
+          <Link
+            href={`/${orgSlug}/teams`}
+            className={buttonVariants({
+              variant: 'ghost',
+              size: 'sm',
+              className: 'mt-2',
+            })}
+          >
             View Team
             <ArrowRight className='ml-2 h-3 w-3' />
-          </Button>
+          </Link>
+          {/* <Button variant='ghost' size='sm' className='mt-2'>
+          </Button> */}
         </CardContent>
       </Card>
 
