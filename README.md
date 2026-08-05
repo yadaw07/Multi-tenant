@@ -54,17 +54,16 @@ npm install
 Create a `.env` file in the project root:
 
 ```dotenv
-# Database (Neon Postgres — pooled connection recommended)
-DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
+DATABASE_URL=
 
 # Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
-CLERK_SECRET_KEY="sk_..."
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
 # Google Gemini
-GEMINI_API_KEY="..."
+GEMINI_API_KEY=
 
-BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+BLOB_READ_WRITE_TOKEN=
 ```
 
 ### Database Setup
