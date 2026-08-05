@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DocuAI — Multi-Tenant AI Document Analysis Platform
+
+A multi-tenant SaaS platform where organizations can upload documents and get instant AI-powered insights — summaries, sentiment analysis, entity extraction, and Q&A — powered by Google Gemini.
+
+Each organization gets a fully isolated workspace: their own team members, documents, and AI analysis results, completely separate from every other organization on the platform.
+
+## Features
+
+- 🏢 **Multi-tenant architecture** — organization-scoped data isolation at the database level
+- 🔐 **Clerk authentication & organizations** — sign-up/sign-in, org creation, team member management with role-based access
+- 📄 **Document upload** — supports `.txt`, `.pdf`, `.docx`, `.doc`, `.md` (up to 10MB), stored via Vercel Blob
+- 🤖 **AI-powered analysis** — Google Gemini integration for:
+  - Document summarization
+  - Sentiment analysis
+  - Entity/keyword extraction
+  - Q&A generation
+- 👥 **Team management** — view organization members and their roles
+- 📱 **Fully responsive** — mobile-friendly navigation and layouts throughout
+
+## Tech Stack
+
+| Layer         | Technology                                                   |
+| ------------- | ------------------------------------------------------------ |
+| Framework     | [Next.js 16](https://nextjs.org/) (App Router, Turbopack)    |
+| Language      | TypeScript                                                   |
+| Auth          | [Clerk](https://clerk.com/) (with Organizations)             |
+| Database      | PostgreSQL ([Neon](https://neon.tech/))                      |
+| ORM           | [Prisma](https://www.prisma.io/)                             |
+| AI            | [Google Gemini](https://ai.google.dev/) (`@google/genai`)    |
+| File Storage  | [Vercel Blob](https://vercel.com/storage/blob)               |
+| UI Components | [shadcn/ui](https://ui.shadcn.com/) (Base UI) + Tailwind CSS |
+| Icons         | [Lucide](https://lucide.dev/)                                |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- A [Clerk](https://clerk.com/) account (for authentication)
+- A [Neon](https://neon.tech/) (or any PostgreSQL) database
+- A [Google AI Studio](https://aistudio.google.com/) API key (for Gemini)
+- A [Vercel](https://vercel.com/) account for Blob store
+
+### Installation
+
+```bash
+git clone https://github.com/yadaw07/Multi-tenant.git
+cd Multi-tenant
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```dotenv
+# Database (Neon Postgres — pooled connection recommended)
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
+
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
+CLERK_SECRET_KEY="sk_..."
+
+# Google Gemini
+GEMINI_API_KEY="..."
+
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+```
+
+### Database Setup
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+### Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data Model
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **User** — synced from Clerk on sign-in
+- **Organization** — synced from Clerk on org creation
+- **OrganizationMember** — join table (user ↔ org, with role)
+- **Document** — belongs to one org and one uploader, holds AI analysis results
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Personal/portfolio project — not currently licensed for reuse.
